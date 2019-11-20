@@ -1,0 +1,21 @@
+sudo: required
+services:
+ - docker
+
+before_install:
+  - docker build -t jbrutus22/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true jbrutus22/react-test npm test
+
+after_success:
+  - docker build -t jbrutus22/multi-client ./client
+  - docker build -t jbrutus22/multi-nginx ./nginx
+  - docker build -t jbrutus22/multi-server ./server
+  - docker build -t jbrutus22/multi-worker ./worker
+
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push jbrutus22/multi-client
+  - docker push jbrutus22/multi-nginx
+  - docker push jbrutus22/multi-server
+  - docker push jbrutus22/multi-worker
