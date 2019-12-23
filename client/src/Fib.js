@@ -8,12 +8,18 @@ function Fib() {
 
     const fetchValues = async () => {
         const values = await axios.get('/api/values/current')
-        setValues(values.data)
+
+        if (values) {
+            setValues(values.data)
+        }
     }
 
     const fetchIndexes = async () => {
         const { data } = await axios.get('/api/values/all')
-        setSeenIndexes(data);
+
+        if (data) {
+            setSeenIndexes(data);
+        }
     }
 
     // Component DidMount
